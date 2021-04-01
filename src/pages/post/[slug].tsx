@@ -31,15 +31,15 @@ interface PostProps {
 // }
 
 // export const getStaticPaths = async () => {
-//   const prismic = getPrismicClient();
-//   const posts = await prismic.query(TODO);
+//   // const prismic = getPrismicClient();
+//   // const posts = await prismic.query(TODO);
 
 //   // TODO
 // };
 
 // export const getStaticProps = async context => {
-//   const prismic = getPrismicClient();
-//   const response = await prismic.getByUID(TODO);
+//   // const prismic = getPrismicClient();
+//   // const response = await prismic.getByUID(TODO);
 
 //   // TODO
 // };
