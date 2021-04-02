@@ -1,6 +1,6 @@
 import styles from '../../styles/common.module.scss'
 
-export default function Header() {
+export function Header() {
   return (
     <>
       <div className={styles.containerCommon}>
