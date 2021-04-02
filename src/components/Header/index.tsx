@@ -4,7 +4,7 @@ export function Header() {
   return (
     <>
       <div className={styles.containerCommon}>
-        <img src="/logo.svg" alt="Space Travelling"/>
+        <img src="/logo.svg" alt="logo"/>
       </div>
     </>
   )

@@ -1,5 +1,6 @@
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
+import Link from 'next/link'
 import Prismic from '@prismicio/client';
 
 import { FiCalendar, FiUser } from 'react-icons/fi'
@@ -30,7 +31,7 @@ interface HomeProps {
 }
 
 export default function Home(props: HomeProps) {
-  console.log(JSON.stringify(props, null, 2))
+  // console.log(JSON.stringify(props, null, 2))
 
   return (
     <>
@@ -41,25 +42,27 @@ export default function Home(props: HomeProps) {
     <div className={`${commonStyles.containerCommon} ${styles.containerHome}`}>
 
       { props.postsPagination.results.map(post => (
-        <main className={styles.containerPost}>
-          <h1>{post.data.title}</h1>
-          <p>{post.data.subtitle}</p>
+        <Link href={`/post/${post.uid}`}>
+          <main className={styles.containerPost} key={post.uid}>
+            <a>{post.data.title}</a>
+            <p>{post.data.subtitle}</p>
 
-          <div className={styles.postInfo}>
-            <span>
-              <FiCalendar color="#BBBBBB" />
-              <time>{post.first_publication_date}</time>
-            </span>
+            <div className={styles.postInfo}>
+              <span>
+                <FiCalendar color="#BBBBBB" />
+                <time>{post.first_publication_date}</time>
+              </span>
 
-            <span>
-              <FiUser color="#BBBBBB" />
-              <p>{post.data.author}</p>
-            </span>
-          </div>
-        </main>
+              <span>
+                <FiUser color="#BBBBBB" />
+                <p>{post.data.author}</p>
+              </span>
+            </div>
+          </main>
+        </Link>
       )) }
 
-      <h2>Carregar mais posts</h2>
+      { props.postsPagination.next_page !== null && <h2>Carregar mais posts</h2> }
     </div>
     </>
   )
@@ -72,7 +75,7 @@ export const getStaticProps: GetStaticProps = async () => {
     Prismic.predicates.at('document.type', 'posts')
   ], {
     fetch: ['posts.title', 'posts.subtitle', 'posts.author', 'posts.next_page'],
-    pageSize: 1,
+    pageSize: 10,
   })
 
   const next_page = postsResponse.next_page

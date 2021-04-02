@@ -9,11 +9,13 @@
 
 
 .containerPost {
+  cursor: pointer;
+
   & + .containerPost {
     margin-top: 3.125rem;
   }
 
-  h1 {
+  a {
     font-size: 1.75rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
