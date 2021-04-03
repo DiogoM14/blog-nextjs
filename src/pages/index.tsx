@@ -43,6 +43,8 @@ export default function Home(props: HomeProps) {
 
     <div className={`${commonStyles.containerCommon} ${styles.containerHome}`}>
 
+      <img src="./logo.svg" alt="logo"/>
+
       { props.postsPagination.results.map(post => (
         <Link href={`/post/${post.uid}`}>
           <main className={styles.containerPost} key={post.uid}>

@@ -12,6 +12,7 @@ import { getPrismicClient } from '../../services/prismic';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './post.module.scss';
 import { useRouter } from 'next/router';
+import { Header } from '../../components/Header';
 
 interface Post {
   first_publication_date: string | null;
@@ -46,6 +47,8 @@ export default function Post({ post }: PostProps) {
         <Head>
           <title>{ post.data.title } | Space Travelling</title>
         </Head>
+
+        <Header />
 
         <img className={styles.banner} src={post.data.banner.url} alt={post.data.title} />
 

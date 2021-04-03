@@ -5,11 +5,13 @@ import styles from './header.module.scss'
 export function Header() {
   return (
     <>
-      <div className={commonStyles.containerCommon}>
+      <header className={commonStyles.containerCommon}>
         <Link href="/">
-          <img className={styles.headerImage} src="/logo.svg" alt="logo"/>
+          <a>
+            <img className={styles.headerImage} src="/logo.svg" alt="logo"/>
+          </a>
         </Link>
-      </div>
+      </header>
     </>
   )
 }
