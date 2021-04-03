@@ -2,6 +2,8 @@ import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link'
 import Prismic from '@prismicio/client';
+import { format } from 'date-fns';
+import ptBR from 'date-fns/locale/pt-BR';
 
 import { FiCalendar, FiUser } from 'react-icons/fi'
 
@@ -82,13 +84,12 @@ export const getStaticProps: GetStaticProps = async () => {
 
   const results = postsResponse.results.map(post => {
     return {
-
         uid: post.uid,
-        first_publication_date: new Date(post.first_publication_date).toLocaleDateString('pt', {
-          day: '2-digit',
-          month: 'long',
-          year: 'numeric'
-        }),
+        first_publication_date: format(new Date(post.first_publication_date),
+          "dd MMM yyyy",
+          {
+            locale: ptBR,
+          }),
         data: {
           title: RichText.asText(post.data.title),
           subtitle: RichText.asText(post.data.subtitle),
