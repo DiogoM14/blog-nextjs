@@ -1,18 +1,18 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { RichText } from 'prismic-dom';
 import Prismic from '@prismicio/client';
-import Head from 'next/head';
 import { format } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
 
 import { FiCalendar, FiUser, FiClock } from 'react-icons/fi'
 
 import { getPrismicClient } from '../../services/prismic';
+import Header from '../../components/Header';
 
 import commonStyles from '../../styles/common.module.scss';
 import styles from './post.module.scss';
-import { useRouter } from 'next/router';
-import { Header } from '../../components/Header';
 
 interface Post {
   first_publication_date: string | null;
@@ -40,43 +40,44 @@ export default function Post({ post }: PostProps) {
 
   return (
     <>
+      <Head>
+        <title>{ post.data.title } | Space Travelling</title>
+      </Head>
+
       {router.isFallback ? (
         <h1>Carregando...</h1>
       ) : (
         <>
-        <Head>
-          <title>{ post.data.title } | Space Travelling</title>
-        </Head>
 
-        <Header />
+          <Header />
 
-        <img className={styles.banner} src={post.data.banner.url} alt={post.data.title} />
+          <img className={styles.banner} src={post.data.banner.url} alt={post.data.title} />
 
-        <article className={`${commonStyles.containerCommon} ${styles.containerPost}`}>
-          <h1>{post.data.title}</h1>
-          <div>
-            <span>
-              <FiCalendar />
-              <time>{post.first_publication_date}</time >
-            </span>
-            <span>
-              <FiUser />
-              <p>{post.data.author}</p>
-            </span>
-            <span>
-              <FiClock />
-              <p>4 min</p>
-            </span>
-          </div>
+          <article className={`${commonStyles.containerCommon} ${styles.containerPost}`}>
+            <h1>{post.data.title}</h1>
+            <div>
+              <span>
+                <FiCalendar />
+                <time>{post.first_publication_date}</time >
+              </span>
+              <span>
+                <FiUser />
+                <p>{post.data.author}</p>
+              </span>
+              <span>
+                <FiClock />
+                <p>4 min</p>
+              </span>
+            </div>
 
-          { post?.data?.content?.map(content => (
-            <div
-              className={styles.postContent}
-              key={content.heading}
-              dangerouslySetInnerHTML={{ __html: RichText.asHtml(content.body) }}
-            />
-          )) }
-        </article>
+            { post?.data?.content?.map(content => (
+              <div
+                className={styles.postContent}
+                key={content.heading}
+                dangerouslySetInnerHTML={{ __html: RichText.asHtml(content.body) }}
+              />
+            )) }
+          </article>
         </>
       )}
     </>

@@ -4,14 +4,15 @@ import Link from 'next/link'
 import Prismic from '@prismicio/client';
 import { format } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
+import { RichText } from 'prismic-dom';
 
 import { FiCalendar, FiUser } from 'react-icons/fi'
 
 import { getPrismicClient } from '../services/prismic';
+import Header from '../components/Header';
 
 import commonStyles from '../styles/common.module.scss';
 import styles from './home.module.scss';
-import { RichText } from 'prismic-dom';
 
 interface Post {
   uid?: string;
@@ -41,33 +42,39 @@ export default function Home(props: HomeProps) {
       <title>Home | Space Travelling</title>
     </Head>
 
-    <div className={`${commonStyles.containerCommon} ${styles.containerHome}`}>
+    <main className={`${commonStyles.containerCommon} ${styles.containerHome}`}>
 
-      <img src="./logo.svg" alt="logo"/>
+      <Header />
 
-      { props.postsPagination.results.map(post => (
-        <Link href={`/post/${post.uid}`}>
-          <main className={styles.containerPost} key={post.uid}>
-            <a>{post.data.title}</a>
-            <p>{post.data.subtitle}</p>
+      <ul>
+        { props.postsPagination.results.map(post => (
+          <li key={post.uid} className={styles.containerPost}>
 
-            <div className={styles.postInfo}>
-              <span>
-                <FiCalendar color="#BBBBBB" />
-                <time>{post.first_publication_date}</time>
-              </span>
+            <Link href={`/post/${post.uid}`}>
+              <a>
+                <h3>{post.data.title}</h3>
+                <p>{post.data.subtitle}</p>
 
-              <span>
-                <FiUser color="#BBBBBB" />
-                <p>{post.data.author}</p>
-              </span>
-            </div>
-          </main>
-        </Link>
-      )) }
+                <div className={styles.postInfo}>
+                  <span>
+                    <FiCalendar color="#BBBBBB" />
+                    <time>{post.first_publication_date}</time>
+                  </span>
+
+                  <span>
+                    <FiUser color="#BBBBBB" />
+                    <p>{post.data.author}</p>
+                  </span>
+                </div>
+              </a>
+            </Link>
+
+          </li>
+        )) }
+      </ul>
 
       { props.postsPagination.next_page !== null && <h2>Carregar mais posts</h2> }
-    </div>
+    </main>
     </>
   )
 }
