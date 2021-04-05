@@ -58,7 +58,11 @@ export default function Home(props: HomeProps) {
                 <div className={styles.postInfo}>
                   <span>
                     <FiCalendar color="#BBBBBB" />
-                    <time>{post.first_publication_date}</time>
+                    <time>
+                      {format(new Date(post.first_publication_date),
+                        "dd MMM yyyy",
+                        {locale: ptBR})}
+                    </time>
                   </span>
 
                   <span>
@@ -86,7 +90,7 @@ export const getStaticProps: GetStaticProps = async () => {
     Prismic.predicates.at('document.type', 'posts')
   ], {
     fetch: ['posts.title', 'posts.subtitle', 'posts.author', 'posts.next_page'],
-    pageSize: 2,
+    pageSize: 5,
   })
 
   const next_page = postsResponse.next_page
@@ -94,15 +98,11 @@ export const getStaticProps: GetStaticProps = async () => {
   const results = postsResponse.results.map(post => {
     return {
         uid: post.uid,
-        first_publication_date: format(new Date(post.first_publication_date),
-          "dd MMM yyyy",
-          {
-            locale: ptBR,
-          }),
+        first_publication_date: post.first_publication_date,
         data: {
-          title: RichText.asText(post.data.title),
-          subtitle: RichText.asText(post.data.subtitle),
-          author: RichText.asText(post.data.author),
+          title: post.data.title,
+          subtitle: post.data.subtitle,
+          author: post.data.author,
         },
 
     }

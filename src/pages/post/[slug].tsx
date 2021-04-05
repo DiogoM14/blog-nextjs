@@ -41,28 +41,31 @@ export default function Post({ post }: PostProps) {
   return (
     <>
       <Head>
-        <title>{ post.data.title } | Space Travelling</title>
+        <title>{ post?.data?.title } | Space Travelling</title>
       </Head>
+
+      <Header />
 
       {router.isFallback ? (
         <h1>Carregando...</h1>
       ) : (
         <>
-
-          <Header />
-
-          <img className={styles.banner} src={post.data.banner.url} alt={post.data.title} />
+          <img className={styles.banner} src={post?.data?.banner?.url} alt={post?.data?.title} />
 
           <article className={`${commonStyles.containerCommon} ${styles.containerPost}`}>
-            <h1>{post.data.title}</h1>
+            <h1>{post?.data?.title}</h1>
             <div>
               <span>
                 <FiCalendar />
-                <time>{post.first_publication_date}</time >
+                <time>
+                  {format(new Date(post?.first_publication_date),
+                  "dd MMM yyyy",
+                  {locale: ptBR})}
+                </time>
               </span>
               <span>
                 <FiUser />
-                <p>{post.data.author}</p>
+                <p>{post?.data?.author}</p>
               </span>
               <span>
                 <FiClock />
@@ -71,11 +74,12 @@ export default function Post({ post }: PostProps) {
             </div>
 
             { post?.data?.content?.map(content => (
-              <div
-                className={styles.postContent}
-                key={content.heading}
-                dangerouslySetInnerHTML={{ __html: RichText.asHtml(content.body) }}
-              />
+              <div className={styles.postContent} key={content.heading}>
+                <h2>{content.heading}</h2>
+                <div
+                  dangerouslySetInnerHTML={{ __html: RichText.asHtml(content.body) }}
+                />
+              </div>
             )) }
           </article>
         </>
@@ -92,14 +96,20 @@ export const getStaticPaths: GetStaticPaths = async () => {
     pageSize: 2,
   })
 
+  const paths = results.map(post => ({
+    params: {
+      slug: post.uid
+    }
+  }))
+
   return {
-    paths: results?.map(({ slugs }) => `/post/${slugs}`) || [],
     fallback: true,
+    paths,
   }
 }
 
-export const getStaticProps: GetStaticProps = async context => {
-  const { slug } = context.params
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const { slug } = params
 
   const prismic = getPrismicClient()
   const response = await prismic.getByUID('posts', String(slug), {})
@@ -108,18 +118,14 @@ export const getStaticProps: GetStaticProps = async context => {
 
   const post = {
     uid: response.uid,
-    first_publication_date: format(new Date(response.first_publication_date),
-    "dd MMM yyyy",
-    {
-      locale: ptBR,
-    }),
+    first_publication_date: response.first_publication_date,
     data: {
-      title: RichText.asText(response.data.title),
+      title: response.data.title,
       subtitle: response.data.subtitle,
       banner: {
         url: response.data.banner.url,
       },
-      author: RichText.asText(response.data.author),
+      author: response.data.author,
       content: response.data.content,
     },
   }
