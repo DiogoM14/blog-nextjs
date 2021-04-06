@@ -10,6 +10,7 @@ import { FiCalendar, FiUser, FiClock } from 'react-icons/fi'
 
 import { getPrismicClient } from '../../services/prismic';
 import Header from '../../components/Header';
+import { Client } from '../api/preview'
 
 import commonStyles from '../../styles/common.module.scss';
 import styles from './post.module.scss';
@@ -36,7 +37,7 @@ interface PostProps {
   post: Post;
 }
 
-export default function Post({ post }: PostProps) {
+export default function Post({ post, doc }) {
   const router = useRouter()
 
   useEffect(() => {
@@ -123,7 +124,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   }
 }
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps = async ({ params, preview, previewData }) => {
   const { slug } = params
 
   const prismic = getPrismicClient()
@@ -145,9 +146,16 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     },
   }
 
+  const { ref } = previewData
+
+  const client = Client()
+  const doc = await client.getSingle('homepage', ref ? { ref } : null) || {}
+
   return {
     props: {
       post,
+      doc,
+      preview
     },
     redirect: 60 * 30,
   }
