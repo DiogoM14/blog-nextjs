@@ -13,6 +13,7 @@ import Header from '../../components/Header';
 
 import commonStyles from '../../styles/common.module.scss';
 import styles from './post.module.scss';
+import { useEffect } from 'react';
 
 interface Post {
   first_publication_date: string | null;
@@ -37,6 +38,18 @@ interface PostProps {
 
 export default function Post({ post }: PostProps) {
   const router = useRouter()
+
+  useEffect(() => {
+    let script = document.createElement("script")
+    let anchor = document.getElementById("inject-comments-for-uterances")
+    script.setAttribute("src", "https://utteranc.es/client.js")
+    script.setAttribute("crossorigin","anonymous")
+    script.setAttribute("async", "true")
+    script.setAttribute("repo", "diogom14/blog-nextjs")
+    script.setAttribute("issue-term", "pathname")
+    script.setAttribute( "theme", "github-dark")
+    anchor.appendChild(script)
+  }, [])
 
   return (
     <>
@@ -82,6 +95,8 @@ export default function Post({ post }: PostProps) {
               </div>
             )) }
           </article>
+
+          <div id="inject-comments-for-uterances"></div>
         </>
       )}
     </>
