@@ -5,6 +5,7 @@ import { RichText } from 'prismic-dom';
 import Prismic from '@prismicio/client';
 import { format } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
+import Link from 'next/link'
 
 import { FiCalendar, FiUser, FiClock } from 'react-icons/fi'
 
@@ -37,7 +38,7 @@ interface PostProps {
   post: Post;
 }
 
-export default function Post({ post, doc }) {
+export default function Post({ post, preview }) {
   const router = useRouter()
 
   useEffect(() => {
@@ -59,6 +60,12 @@ export default function Post({ post, doc }) {
       </Head>
 
       <Header />
+
+      {preview && (
+        <Link href="/">
+          <aside>Sair do modo preview</aside>
+        </Link>
+      )}
 
       {router.isFallback ? (
         <h1>Carregando...</h1>
@@ -124,11 +131,16 @@ export const getStaticPaths: GetStaticPaths = async () => {
   }
 }
 
-export const getStaticProps: GetStaticProps = async ({ params, preview, previewData }) => {
+export const getStaticProps: GetStaticProps = async ({ params, preview = false, previewData }) => {
+  // preview - Caso seja true, renderiza o botão de exit-preview
+  // previewData - possui um cookie
+
   const { slug } = params
 
   const prismic = getPrismicClient()
-  const response = await prismic.getByUID('posts', String(slug), {})
+  const response = await prismic.getByUID('posts', String(slug), {
+    ref: previewData?.ref ?? null,
+  })
 
   // console.log(JSON.stringify(response, null, 2))
 
@@ -146,15 +158,14 @@ export const getStaticProps: GetStaticProps = async ({ params, preview, previewD
     },
   }
 
-  const { ref } = previewData
+  // const { ref } = previewData
 
-  const client = Client()
-  const doc = await client.getSingle('homepage', ref ? { ref } : null) || {}
+  // const client = Client()
+  // const doc = await client.getSingle('homepage', ref ? { ref } : null) || {}
 
   return {
     props: {
       post,
-      doc,
       preview
     },
     redirect: 60 * 30,

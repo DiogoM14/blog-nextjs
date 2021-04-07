@@ -21,7 +21,7 @@ const createClientOptions = (req = null, prismicAccessToken = null) => {
   };
 };
 
-const Preview = async (req, res) => {
+const Preview = async (req: NextApiRequest, res: NextApiResponse) => {
   const { token: ref, documentId } = req.query;
   const redirectUrl = await Client(req)
     .getPreviewResolver(ref, documentId)
