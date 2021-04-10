@@ -7,7 +7,7 @@ import { format } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
 import Link from 'next/link'
 
-import { FiCalendar, FiUser, FiClock } from 'react-icons/fi'
+import { FiCalendar, FiUser, FiClock, FiEyeOff } from 'react-icons/fi'
 
 import { getPrismicClient } from '../../services/prismic';
 import Header from '../../components/Header';
@@ -63,7 +63,9 @@ export default function Post({ post, preview }) {
 
       {preview && (
         <Link href="/">
-          <aside>Sair do modo preview</aside>
+          <a className={styles.exitPreviewButton}>
+            <FiEyeOff color="#F8F8F8" />
+          </a>
         </Link>
       )}
 
@@ -102,9 +104,23 @@ export default function Post({ post, preview }) {
                 />
               </div>
             )) }
-          </article>
 
-          <div id="inject-comments-for-uterances"></div>
+            <div id="inject-comments-for-uterances"></div>
+
+            <hr className={styles.separator} />
+
+            <section className={styles.nextPage}>
+              <div>
+                <p>Colo utilizar Hooks</p>
+                <a>Post anterior</a>
+              </div>
+
+              <div>
+                <p>Colo utilizar Hooks</p>
+                <a>Proximo post</a>
+              </div>
+            </section>
+          </article>
         </>
       )}
     </>
