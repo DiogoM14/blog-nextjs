@@ -38,7 +38,7 @@ interface PostProps {
   post: Post;
 }
 
-export default function Post({ post, preview }) {
+export default function Post({ post, preview, pagination }) {
   const router = useRouter()
 
   useEffect(() => {
@@ -109,17 +109,27 @@ export default function Post({ post, preview }) {
 
             <hr className={styles.separator} />
 
-            <section className={styles.nextPage}>
-              <div>
-                <p>Colo utilizar Hooks</p>
-                <a>Post anterior</a>
-              </div>
+            {pagination && (
+              <section className={styles.nextPage}>
+                {pagination.prePage && (
+                  <Link href={pagination.nextPage.href}>
+                    <div>
+                      <p>{pagination.prevPage.title}</p>
+                      <a>Post anterior</a>
+                    </div>
+                  </Link>
+                )}
 
-              <div>
-                <p>Colo utilizar Hooks</p>
-                <a>Proximo post</a>
-              </div>
+              {pagination.nextPage && (
+                <Link href={pagination.nextPage.href}>
+                  <div>
+                    <p>{pagination.nextPage.title}</p>
+                    <a>Proximo post</a>
+                  </div>
+                </Link>
+              )}
             </section>
+            )}
           </article>
         </>
       )}
@@ -158,7 +168,7 @@ export const getStaticProps: GetStaticProps = async ({ params, preview = false, 
     ref: previewData?.ref ?? null,
   })
 
-  // console.log(JSON.stringify(response, null, 2))
+  console.log(JSON.stringify(response, null, 2))
 
   const post = {
     uid: response.uid,
@@ -174,15 +184,38 @@ export const getStaticProps: GetStaticProps = async ({ params, preview = false, 
     },
   }
 
-  // const { ref } = previewData
+  const { results: [nextPage] } = await prismic.query(
+    [Prismic.predicates.at('document.type', 'posts')], {
+    after: response.id,
+    orderings: '[document.first_publication_date]',
+  });
 
-  // const client = Client()
-  // const doc = await client.getSingle('homepage', ref ? { ref } : null) || {}
+  const { results: [prevPage] } = await prismic.query(
+    [Prismic.predicates.at('document.type', 'posts')], {
+    after: response.id,
+    orderings: '[document.first_publication_date desc]',
+  });
+
+  const pagination = {
+    nextPage: nextPage
+      ? {
+          title: nextPage.data.title,
+          href: `/post/${nextPage.uid}`,
+        }
+      : null,
+    prevPage: prevPage
+      ? {
+          title: prevPage.data.title,
+          href: `/post/${prevPage.uid}`,
+        }
+      : null,
+  };
 
   return {
     props: {
       post,
-      preview
+      preview,
+      pagination: nextPage || prevPage ? pagination : null,
     },
     redirect: 60 * 30,
   }

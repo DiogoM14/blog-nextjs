@@ -115,6 +115,7 @@ export const getStaticProps: GetStaticProps = async () => {
         'posts.author',
         'posts.next_page',
       ],
+      orderings: '[document.first_publication_date desc]',
       pageSize: 2,
     }
   );
